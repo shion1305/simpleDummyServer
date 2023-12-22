@@ -3,10 +3,12 @@ package main
 import (
 	"fmt"
 	"net/http"
+	"strings"
 )
 
 func helloHandler(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintf(w, "Hello, World!")
+	ip := getIP(r)
+	fmt.Fprintf(w, "Your IP is %s\n", ip)
 }
 
 func main() {
@@ -14,4 +16,12 @@ func main() {
 
 	fmt.Println("Server is running on port 8080...")
 	http.ListenAndServe(":8080", nil)
+}
+
+func getIP(r *http.Request) string {
+	ip := r.RemoteAddr
+	if index := strings.LastIndex(ip, ":"); index != -1 {
+		ip = ip[:index]
+	}
+	return ip
 }
